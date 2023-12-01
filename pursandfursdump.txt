@@ -1,0 +1,1330 @@
+CREATE DATABASE  IF NOT EXISTS `pursandfurs_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `pursandfurs_db`;
+-- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
+--
+-- Host: localhost    Database: pursandfurs_db
+-- ------------------------------------------------------
+-- Server version	8.0.31
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `admin` (
+  `AdminId` int unsigned NOT NULL AUTO_INCREMENT,
+  `FirstName` varchar(50) NOT NULL,
+  `LastName` varchar(50) DEFAULT NULL,
+  `UserName` varchar(60) NOT NULL,
+  `Password` varchar(50) NOT NULL,
+  `EmailId` varchar(255) NOT NULL,
+  `PhoneNumber` varchar(30) NOT NULL,
+  PRIMARY KEY (`AdminId`),
+  UNIQUE KEY `AdminId_UNIQUE` (`AdminId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (1,'Admin','Admin','Admin123','qwerty123','adminnn@gmail.com','+18573135960');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `oneAdminTrigger` BEFORE INSERT ON `admin` FOR EACH ROW BEGIN
+  DECLARE admin_count INT;
+  SELECT COUNT(*) INTO admin_count FROM Admin;
+  IF admin_count > 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Only 1 Admin is allowed.';
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `adminEmailValidTrigger` BEFORE UPDATE ON `admin` FOR EACH ROW BEGIN
+  IF NEW.EmailId NOT REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$' THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Please enter the correct Email ID';
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `adminPasswordValidTrigger` BEFORE UPDATE ON `admin` FOR EACH ROW BEGIN
+  IF LENGTH(NEW.Password) < 8
+    OR NOT (
+      NEW.Password REGEXP '[A-Z]' AND
+      NEW.Password REGEXP '[a-z]' AND
+      NEW.Password REGEXP '[0-9]'
+    ) THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Please enter the correct password.';
+  END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `booking`
+--
+
+DROP TABLE IF EXISTS `booking`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking` (
+  `BookingId` int unsigned NOT NULL AUTO_INCREMENT,
+  `ServiceId` int unsigned NOT NULL,
+  `UserId` int unsigned NOT NULL,
+  `Time` time NOT NULL,
+  `Date` date NOT NULL,
+  `Status` varchar(10) NOT NULL,
+  PRIMARY KEY (`BookingId`),
+  UNIQUE KEY `BookingId_UNIQUE` (`BookingId`),
+  KEY `bookinguserfk` (`UserId`),
+  KEY `bookingservicefk` (`ServiceId`),
+  CONSTRAINT `bookingservicefk` FOREIGN KEY (`ServiceId`) REFERENCES `services` (`ServiceId`) ON UPDATE CASCADE,
+  CONSTRAINT `bookinguserfk` FOREIGN KEY (`UserId`) REFERENCES `userdetail` (`UserId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking`
+--
+
+LOCK TABLES `booking` WRITE;
+/*!40000 ALTER TABLE `booking` DISABLE KEYS */;
+INSERT INTO `booking` VALUES (1,1,1,'10:00:00','2023-05-01','CONFIRMED'),(2,1,3,'11:00:00','2023-05-05','CONFIRMED'),(3,1,3,'11:00:00','2023-04-27','COMPLETED');
+/*!40000 ALTER TABLE `booking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employees`
+--
+
+DROP TABLE IF EXISTS `employees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employees` (
+  `EmployeeId` int unsigned NOT NULL AUTO_INCREMENT,
+  `ShopId` int unsigned NOT NULL,
+  `ServiceId` int unsigned NOT NULL,
+  `FirstName` varchar(50) NOT NULL,
+  `LastName` varchar(50) DEFAULT NULL,
+  `PhoneNumber` varchar(30) NOT NULL,
+  `EmailId` varchar(255) NOT NULL,
+  `StreetName` varchar(45) NOT NULL,
+  `City` varchar(45) NOT NULL,
+  `ZipCode` varchar(45) NOT NULL,
+  PRIMARY KEY (`EmployeeId`),
+  UNIQUE KEY `EmployeeId_UNIQUE` (`EmployeeId`),
+  KEY `shopfk` (`ShopId`),
+  KEY `servicefk` (`ServiceId`),
+  CONSTRAINT `servicefk` FOREIGN KEY (`ServiceId`) REFERENCES `services` (`ServiceId`) ON UPDATE CASCADE,
+  CONSTRAINT `shopfk` FOREIGN KEY (`ShopId`) REFERENCES `petshop` (`ShopId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employees`
+--
+
+LOCK TABLES `employees` WRITE;
+/*!40000 ALTER TABLE `employees` DISABLE KEYS */;
+INSERT INTO `employees` VALUES (1,1,1,'Mary','Jane','123-456-7890','maryjane@example.com','123 Peter Street','New York','10001');
+/*!40000 ALTER TABLE `employees` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `empsalary`
+--
+
+DROP TABLE IF EXISTS `empsalary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `empsalary` (
+  `EmpSalaryId` int unsigned NOT NULL AUTO_INCREMENT,
+  `Date` date NOT NULL,
+  `Salary` float unsigned NOT NULL,
+  `EmployeeId` int unsigned NOT NULL,
+  `ShopId` int unsigned NOT NULL,
+  PRIMARY KEY (`EmpSalaryId`),
+  UNIQUE KEY `EmpSalaryId_UNIQUE` (`EmpSalaryId`),
+  KEY `empsalaryfk` (`EmployeeId`),
+  KEY `salaryshopfk` (`ShopId`),
+  CONSTRAINT `empsalaryfk` FOREIGN KEY (`EmployeeId`) REFERENCES `employees` (`EmployeeId`) ON UPDATE CASCADE,
+  CONSTRAINT `salaryshopfk` FOREIGN KEY (`ShopId`) REFERENCES `petshop` (`ShopId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `empsalary`
+--
+
+LOCK TABLES `empsalary` WRITE;
+/*!40000 ALTER TABLE `empsalary` DISABLE KEYS */;
+INSERT INTO `empsalary` VALUES (1,'2023-05-01',3000,1,1),(2,'2023-04-27',4000,1,1);
+/*!40000 ALTER TABLE `empsalary` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `food`
+--
+
+DROP TABLE IF EXISTS `food`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `food` (
+  `FoodId` int unsigned NOT NULL AUTO_INCREMENT,
+  `PetCategoryId` int unsigned NOT NULL,
+  `FoodName` varchar(50) NOT NULL,
+  `Price` float unsigned NOT NULL,
+  `Description` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`FoodId`),
+  UNIQUE KEY `FoodId_UNIQUE` (`FoodId`),
+  KEY `fpetfoodfk` (`PetCategoryId`),
+  CONSTRAINT `fpetfoodfk` FOREIGN KEY (`PetCategoryId`) REFERENCES `petcategory` (`PetCategoryId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `food`
+--
+
+LOCK TABLES `food` WRITE;
+/*!40000 ALTER TABLE `food` DISABLE KEYS */;
+INSERT INTO `food` VALUES (1,1,'Dog Food',10.99,'Premium dog food for all breeds'),(3,2,'Cat Food',15,'Premium cat food for all breeds');
+/*!40000 ALTER TABLE `food` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orderdetails`
+--
+
+DROP TABLE IF EXISTS `orderdetails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orderdetails` (
+  `OrderDetailId` int unsigned NOT NULL AUTO_INCREMENT,
+  `ToyId` int unsigned DEFAULT NULL,
+  `FoodId` int unsigned DEFAULT NULL,
+  `OrderId` int unsigned NOT NULL,
+  `Quantity` int unsigned NOT NULL,
+  PRIMARY KEY (`OrderDetailId`),
+  UNIQUE KEY `OrderDetailId_UNIQUE` (`OrderDetailId`),
+  KEY `orderfk` (`OrderId`),
+  KEY `toyorderfk` (`ToyId`),
+  KEY `foodorderfk` (`FoodId`),
+  CONSTRAINT `foodorderfk` FOREIGN KEY (`FoodId`) REFERENCES `food` (`FoodId`) ON UPDATE CASCADE,
+  CONSTRAINT `orderfk` FOREIGN KEY (`OrderId`) REFERENCES `orders` (`OrderId`),
+  CONSTRAINT `toyorderfk` FOREIGN KEY (`ToyId`) REFERENCES `toys` (`ToyId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orderdetails`
+--
+
+LOCK TABLES `orderdetails` WRITE;
+/*!40000 ALTER TABLE `orderdetails` DISABLE KEYS */;
+INSERT INTO `orderdetails` VALUES (1,1,NULL,1,2),(3,NULL,1,1,5);
+/*!40000 ALTER TABLE `orderdetails` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders` (
+  `OrderId` int unsigned NOT NULL AUTO_INCREMENT,
+  `Date` date NOT NULL,
+  `UserId` int unsigned NOT NULL,
+  `City` varchar(50) DEFAULT NULL,
+  `State` varchar(50) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`OrderId`),
+  UNIQUE KEY `OrderId_UNIQUE` (`OrderId`),
+  KEY `userorderfk` (`UserId`),
+  CONSTRAINT `userorderfk` FOREIGN KEY (`UserId`) REFERENCES `userdetail` (`UserId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders`
+--
+
+LOCK TABLES `orders` WRITE;
+/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,'2023-05-01',1,'New York','NY','Processing'),(3,'2023-05-05',1,'Philadelphia','PA','Cancelled'),(4,'2023-05-08',1,'San Diego','CA','Shipped');
+/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payments`
+--
+
+DROP TABLE IF EXISTS `payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payments` (
+  `PaymentsId` int unsigned NOT NULL AUTO_INCREMENT,
+  `OrderId` int unsigned DEFAULT NULL,
+  `ServiceId` int unsigned DEFAULT NULL,
+  `Date` date NOT NULL,
+  `UserId` int unsigned NOT NULL,
+  `ShopId` int unsigned NOT NULL,
+  `TotalAmount` float unsigned NOT NULL,
+  `PaymentTypeId` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`PaymentsId`),
+  UNIQUE KEY `PaymentId_UNIQUE` (`PaymentsId`),
+  KEY `paymenttypefk` (`PaymentTypeId`),
+  KEY `orderpaymentfk` (`OrderId`),
+  KEY `servicepaymentfk` (`ServiceId`),
+  KEY `userpaymentfk` (`UserId`),
+  KEY `shoppaymentfk` (`ShopId`),
+  CONSTRAINT `orderpaymentfk` FOREIGN KEY (`OrderId`) REFERENCES `orders` (`OrderId`),
+  CONSTRAINT `paymenttypefk` FOREIGN KEY (`PaymentTypeId`) REFERENCES `paymenttype` (`PaymentTypeId`) ON UPDATE CASCADE,
+  CONSTRAINT `servicepaymentfk` FOREIGN KEY (`ServiceId`) REFERENCES `services` (`ServiceId`),
+  CONSTRAINT `shoppaymentfk` FOREIGN KEY (`ShopId`) REFERENCES `petshop` (`ShopId`) ON UPDATE CASCADE,
+  CONSTRAINT `userpaymentfk` FOREIGN KEY (`UserId`) REFERENCES `userdetail` (`UserId`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payments`
+--
+
+LOCK TABLES `payments` WRITE;
+/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
+INSERT INTO `payments` VALUES (2,NULL,1,'2023-04-28',1,1,25,1),(3,1,NULL,'2023-04-28',1,1,0,1),(4,1,NULL,'2023-04-28',1,1,0,1),(5,NULL,1,'2023-04-28',1,1,25,1),(6,1,NULL,'2023-05-08',1,1,0,1),(7,1,NULL,'2023-05-01',1,1,66.93,1);
+/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `paymenttype`
+--
+
+DROP TABLE IF EXISTS `paymenttype`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `paymenttype` (
+  `PaymentTypeId` int unsigned NOT NULL AUTO_INCREMENT,
+  `Type` varchar(45) NOT NULL,
+  PRIMARY KEY (`PaymentTypeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `paymenttype`
+--
+
+LOCK TABLES `paymenttype` WRITE;
+/*!40000 ALTER TABLE `paymenttype` DISABLE KEYS */;
+INSERT INTO `paymenttype` VALUES (1,'Credit Card'),(3,'Debit Card'),(4,'PayPal'),(5,'Apple Pay');
+/*!40000 ALTER TABLE `paymenttype` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `petcategory`
+--
+
+DROP TABLE IF EXISTS `petcategory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `petcategory` (
+  `PetCategoryId` int unsigned NOT NULL AUTO_INCREMENT,
+  `PetType` varchar(60) NOT NULL,
+  PRIMARY KEY (`PetCategoryId`),
+  UNIQUE KEY `PetCategoryId_UNIQUE` (`PetCategoryId`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `petcategory`
+--
+
+LOCK TABLES `petcategory` WRITE;
+/*!40000 ALTER TABLE `petcategory` DISABLE KEYS */;
+INSERT INTO `petcategory` VALUES (1,'Dog'),(2,'Cat'),(3,'Fish'),(4,'Bird');
+/*!40000 ALTER TABLE `petcategory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `petservices`
+--
+
+DROP TABLE IF EXISTS `petservices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `petservices` (
+  `ShopId` int unsigned NOT NULL,
+  `ServiceId` int unsigned NOT NULL,
+  KEY `userofshopfk` (`ShopId`),
+  KEY `shopservicefk` (`ServiceId`),
+  CONSTRAINT `shopservicefk` FOREIGN KEY (`ServiceId`) REFERENCES `services` (`ServiceId`) ON UPDATE CASCADE,
+  CONSTRAINT `userofshopfk` FOREIGN KEY (`ShopId`) REFERENCES `petshop` (`ShopId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `petservices`
+--
+
+LOCK TABLES `petservices` WRITE;
+/*!40000 ALTER TABLE `petservices` DISABLE KEYS */;
+INSERT INTO `petservices` VALUES (1,1);
+/*!40000 ALTER TABLE `petservices` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `petshop`
+--
+
+DROP TABLE IF EXISTS `petshop`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `petshop` (
+  `ShopId` int unsigned NOT NULL AUTO_INCREMENT,
+  `Street` varchar(50) DEFAULT NULL,
+  `City` varchar(50) NOT NULL,
+  `Pincode` varchar(45) NOT NULL,
+  `Username` varchar(60) DEFAULT NULL,
+  `AdminID` int unsigned DEFAULT NULL,
+  `PhoneNumber` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`ShopId`),
+  UNIQUE KEY `ShopId_UNIQUE` (`ShopId`),
+  UNIQUE KEY `Username` (`Username`),
+  KEY `adminfk` (`AdminID`),
+  CONSTRAINT `adminfk` FOREIGN KEY (`AdminID`) REFERENCES `admin` (`AdminId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `petshop`
+--
+
+LOCK TABLES `petshop` WRITE;
+/*!40000 ALTER TABLE `petshop` DISABLE KEYS */;
+INSERT INTO `petshop` VALUES (1,'673 Main St','Mytown','90345','Johnwick',1,'+17842456789'),(2,'673 Main St','Mytown','90345','Johnk',1,'+17842454789');
+/*!40000 ALTER TABLE `petshop` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `services`
+--
+
+DROP TABLE IF EXISTS `services`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `services` (
+  `ServiceId` int unsigned NOT NULL AUTO_INCREMENT,
+  `ShopId` int unsigned NOT NULL,
+  `PetCategoryId` int unsigned NOT NULL,
+  `TypeOfService` varchar(20) NOT NULL,
+  `Price` float unsigned NOT NULL,
+  PRIMARY KEY (`ServiceId`),
+  UNIQUE KEY `ServiceId_UNIQUE` (`ServiceId`),
+  KEY `serviceshopfk` (`ShopId`),
+  KEY `petcategoryfk` (`PetCategoryId`),
+  CONSTRAINT `petcategoryfk` FOREIGN KEY (`PetCategoryId`) REFERENCES `petcategory` (`PetCategoryId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `serviceshopfk` FOREIGN KEY (`ShopId`) REFERENCES `petshop` (`ShopId`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `services`
+--
+
+LOCK TABLES `services` WRITE;
+/*!40000 ALTER TABLE `services` DISABLE KEYS */;
+INSERT INTO `services` VALUES (1,1,1,'Grooming',25),(2,1,2,'Nail Trimming',15);
+/*!40000 ALTER TABLE `services` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `trDeleteService` BEFORE DELETE ON `services` FOR EACH ROW BEGIN
+    DECLARE booking_count INT;
+
+    SELECT COUNT(*) INTO booking_count FROM Booking WHERE ServiceID = OLD.ServiceID AND Status = 'CONFIRMED';
+
+    IF booking_count > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot delete service because it has confirmed bookings.';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `toys`
+--
+
+DROP TABLE IF EXISTS `toys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `toys` (
+  `ToyId` int unsigned NOT NULL AUTO_INCREMENT,
+  `PetCategoryId` int unsigned DEFAULT NULL,
+  `ToyName` varchar(50) NOT NULL,
+  `Price` float unsigned NOT NULL,
+  `Description` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`ToyId`),
+  UNIQUE KEY `ToyId_UNIQUE` (`ToyId`),
+  KEY `toysfk` (`PetCategoryId`),
+  CONSTRAINT `toysfk` FOREIGN KEY (`PetCategoryId`) REFERENCES `petcategory` (`PetCategoryId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `toys`
+--
+
+LOCK TABLES `toys` WRITE;
+/*!40000 ALTER TABLE `toys` DISABLE KEYS */;
+INSERT INTO `toys` VALUES (1,1,'Squeaky Ball',5.99,'A fun and durable squeaky ball for dogs'),(2,2,'Fur Ball',6.99,'A fun and durable fur ball for cats');
+/*!40000 ALTER TABLE `toys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `userdetail`
+--
+
+DROP TABLE IF EXISTS `userdetail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `userdetail` (
+  `UserId` int unsigned NOT NULL AUTO_INCREMENT,
+  `FirstName` varchar(50) NOT NULL,
+  `LastName` varchar(50) DEFAULT NULL,
+  `Username` varchar(60) NOT NULL,
+  `EmailId` varchar(255) NOT NULL,
+  `PhoneNumber` varchar(30) NOT NULL,
+  `ShopId` int unsigned NOT NULL,
+  `Password` varchar(50) NOT NULL,
+  PRIMARY KEY (`UserId`),
+  UNIQUE KEY `UserId_UNIQUE` (`UserId`),
+  UNIQUE KEY `username_unique` (`Username`),
+  KEY `userfk` (`ShopId`),
+  CONSTRAINT `userfk` FOREIGN KEY (`ShopId`) REFERENCES `petshop` (`ShopId`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `userdetail`
+--
+
+LOCK TABLES `userdetail` WRITE;
+/*!40000 ALTER TABLE `userdetail` DISABLE KEYS */;
+INSERT INTO `userdetail` VALUES (1,'John','Doe','johndoe','johndoe@example.com','+11234567890',1,'Abcd1234'),(3,'Anna','Higgins','annhig','annhig@example.com','+11234567890',1,'Abcd1234');
+/*!40000 ALTER TABLE `userdetail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'pursandfurs_db'
+--
+
+--
+-- Dumping routines for database 'pursandfurs_db'
+--
+/*!50003 DROP FUNCTION IF EXISTS `CalculateTotalAmountFunction` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `CalculateTotalAmountFunction`(orderId INT, orderDate DATE) RETURNS float
+    DETERMINISTIC
+BEGIN
+  DECLARE totalAmount FLOAT;
+  DECLARE toyAmount FLOAT;
+  DECLARE foodAmount FLOAT;
+
+  SELECT SUM(t.Price * od.Quantity) INTO toyAmount FROM Toys t
+    JOIN OrderDetails od ON t.ToyID = od.ToyID
+    JOIN Orders o ON o.OrderID = od.OrderID
+    WHERE o.OrderID = orderId AND DATE(o.Date) = orderDate AND o.Status <> 'Cancelled';
+
+  SELECT SUM(f.Price * od.Quantity) INTO foodAmount FROM Food f
+    JOIN OrderDetails od ON f.FoodID = od.FoodID
+    JOIN Orders o ON o.OrderID = od.OrderID
+    WHERE o.OrderID = orderId AND DATE(o.Date) = orderDate AND o.Status <> 'Cancelled';
+
+  SET totalAmount = COALESCE(toyAmount, 0) + COALESCE(foodAmount, 0);
+
+  RETURN totalAmount;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `getServicePrice` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `getServicePrice`(service_id int) RETURNS int
+    DETERMINISTIC
+begin
+	declare result int;
+    select price into result from Services where ServiceId = service_id  limit 1;
+    return result;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `getShopIdFucntion` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `getShopIdFucntion`(username varchar(60)) RETURNS int
+    DETERMINISTIC
+begin
+	declare result int;
+    select ShopId into result from petshop where Username = username limit 1;
+    return result;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `validatePasswordFunction` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `validatePasswordFunction`(Password VARCHAR(60)) RETURNS tinyint(1)
+    DETERMINISTIC
+BEGIN
+  RETURN Password REGEXP '^(?=.[A-Za-z])(?=.\d)[A-Za-z\d]{8,}$';
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `validatePhoneNumberFunction` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `validatePhoneNumberFunction`(PhoneNumber VARCHAR(255)) RETURNS tinyint(1)
+    DETERMINISTIC
+BEGIN
+  RETURN PhoneNumber REGEXP '^\\+1[0-9]{10}$';
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `validatePincodeFunction` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `validatePincodeFunction`(Pincode VARCHAR(255)) RETURNS tinyint(1)
+    DETERMINISTIC
+BEGIN
+  RETURN Pincode REGEXP '^[0-9]{5}(?:-[0-9]{4})?$';
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `ValidatePrice` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `ValidatePrice`(p_Price FLOAT) RETURNS tinyint(1)
+    DETERMINISTIC
+BEGIN
+    IF p_Price > 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `validateUserNameFunction` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `validateUserNameFunction`(UserName VARCHAR(20)) RETURNS tinyint(1)
+    DETERMINISTIC
+BEGIN
+  RETURN UserName REGEXP '^[A-Za-z0-9]+$';
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_Booking` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_Booking`(IN p_Username VARCHAR(255), IN p_TypeOfService VARCHAR(255), IN p_Time TIME, IN p_Date DATE, IN p_Status VARCHAR(10))
+BEGIN
+    DECLARE v_UserID INT;
+    DECLARE v_ServiceID INT;
+
+    SELECT UserID INTO v_UserID
+    FROM UserDetail
+    WHERE username = p_Username;
+
+    SELECT ServiceID INTO v_ServiceID
+    FROM Services
+    WHERE TypeOfService = p_TypeOfService;
+
+    IF v_UserID IS NOT NULL AND v_ServiceID IS NOT NULL THEN
+        INSERT INTO Booking (ServiceID, UserID, Time, Date, status)
+        VALUES (v_ServiceID, v_UserID, p_Time, p_Date, p_Status);
+    ELSEIF v_UserID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Username not found in UserDetails table';
+    ELSEIF v_ServiceID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'TypeOfService not found in Services table';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_Employees` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_Employees`(IN p_Username VARCHAR(255), IN p_TypeOfService VARCHAR(255), IN p_FirstName VARCHAR(50), IN p_LastName VARCHAR(50), IN p_PhoneNumber VARCHAR(30), IN p_EmailID VARCHAR(255), IN p_StreetName VARCHAR(45), IN p_City VARCHAR(45), IN p_ZipCode VARCHAR(45))
+BEGIN
+    DECLARE v_ShopID INT;
+    DECLARE v_ServiceID INT;
+
+    SELECT ShopID INTO v_ShopID
+    FROM PetShop
+    WHERE Username = p_Username;
+
+    SELECT ServiceID INTO v_ServiceID
+    FROM Services
+    WHERE TypeOfService = p_TypeOfService;
+
+    IF v_ShopID IS NOT NULL AND v_ServiceID IS NOT NULL THEN
+        INSERT INTO Employees (ServiceID, ShopID, FirstName, LastName, PhoneNumber, EmailID, StreetName, City, ZipCode)
+        VALUES (v_ServiceID, v_ShopID, p_FirstName, p_LastName, p_PhoneNumber, p_EmailID, p_StreetName, p_City, p_ZipCode);
+    ELSEIF v_ShopID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Username not found in PetShop table';
+    ELSEIF v_ServiceID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'TypeOfService not found in Services table';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_EmpSalary` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_EmpSalary`(IN p_Username VARCHAR(255), IN p_EmployeeID INT, IN p_Salary FLOAT, IN p_Date DATE)
+BEGIN
+    DECLARE v_ShopID INT;
+
+    SELECT ShopID INTO v_ShopID
+    FROM PetShop
+    WHERE Username = p_Username Limit 1;
+
+    IF v_ShopID IS NOT NULL AND EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = p_EmployeeID) THEN
+        INSERT INTO EmpSalary (EmployeeID, ShopID, Salary, Date)
+        VALUES (p_EmployeeID, v_ShopID, p_Salary, p_Date);
+    ELSEIF v_ShopID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Username not found in PetShop table';
+    ELSEIF NOT EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = p_EmployeeID) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'EmployeeID not found in Employees table';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_Food` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_Food`(IN p_PetType VARCHAR(255), IN p_FoodName VARCHAR(255), IN p_Price FLOAT, IN p_Description VARCHAR(255))
+BEGIN
+    DECLARE v_PetCategoryID INT;
+
+    IF ValidatePrice(p_Price) THEN
+        SELECT PetCategoryID INTO v_PetCategoryID
+        FROM PetCategory
+        WHERE PetType = p_PetType;
+
+        IF v_PetCategoryID IS NOT NULL THEN
+            INSERT INTO Food (PetCategoryID, FoodName, Price, Description)
+            VALUES (v_PetCategoryID, p_FoodName, p_Price, p_Description);
+        ELSE
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'PetType not found in PetCategory table';
+        END IF;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Price must be a non-negative value';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_OrderDetails` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_OrderDetails`(IN p_ToyName VARCHAR(255), IN p_FoodName VARCHAR(255), IN p_OrderID INT, IN p_Quantity INT)
+BEGIN
+    DECLARE v_ToyID INT;
+    DECLARE v_FoodID INT;
+
+    SELECT ToyID INTO v_ToyID
+    FROM Toys
+    WHERE ToyName = p_ToyName;
+
+    SELECT FoodID INTO v_FoodID
+    FROM Food
+    WHERE FoodName = p_FoodName;
+
+    IF v_ToyID IS NOT NULL AND v_FoodID IS NULL THEN
+        INSERT INTO orderdetails (ToyID, OrderID, FoodID, Quantity)
+        VALUES (v_ToyID, p_OrderID, NULL, p_Quantity);
+    ELSEIF v_ToyID IS NULL AND v_FoodID IS NOT NULL THEN
+        INSERT INTO orderdetails (ToyID, OrderID, FoodID, Quantity)
+        VALUES (NULL, p_OrderID, v_FoodID, p_Quantity);
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Either ToyName or FoodName should be valid, but not both';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_Orders` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_Orders`(IN p_Username VARCHAR(255), IN p_Date DATE, IN p_City VARCHAR(50), IN p_State VARCHAR(50), IN p_Status VARCHAR(50))
+BEGIN
+    DECLARE v_UserID INT;
+
+    SELECT UserID INTO v_UserID
+    FROM Userdetail
+    WHERE Username = p_Username;
+
+    IF v_UserID IS NOT NULL THEN
+        INSERT INTO orders (Date, UserID, City, State, Status)
+        VALUES (p_Date, v_UserID, p_City, p_State, p_Status);
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Username not found in Userdetail table';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_PaymentOrderID` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_PaymentOrderID`(IN p_order_id INT, IN p_username VARCHAR(60), IN p_date DATE, IN p_payment_type VARCHAR(45), IN p_shopUserName VARCHAR(45))
+BEGIN
+  DECLARE v_service_id INT;
+  DECLARE v_shop_id INT;
+  DECLARE v_user_id INT;
+  DECLARE v_total_amount FLOAT;
+  DECLARE v_payment_type_id INT;
+
+  -- Fetch ShopID using getShopIdFunction
+  SELECT getShopIdFucntion(p_shopUserName) INTO v_shop_id;
+
+  -- Fetch UserID from UserDetails table on the basis of UserName attribute
+  SELECT UserID INTO v_user_id FROM UserDetail WHERE UserName = p_username;
+
+  -- Fetch TotalAmount using V_service_id
+   SELECT CalculateTotalAmountFunction(p_order_id, p_date) INTO v_total_amount;
+
+  -- Fetch PaymentTypeID on the basis of Type attribute in the PaymentType table
+  SELECT PaymentTypeID INTO v_payment_type_id FROM PaymentType WHERE Type = p_payment_type;
+
+  -- Insert payment data into Payments table
+  INSERT INTO Payments (OrderId, ServiceId, ShopId, Date, UserId, TotalAmount, PaymentTypeId) VALUES (p_order_id, NULL, v_shop_id, p_date, v_user_id, v_total_amount, v_payment_type_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_PaymentServices` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_PaymentServices`(IN p_username VARCHAR(60), IN p_type_of_service VARCHAR(45), IN p_date DATE, IN p_payment_type VARCHAR(45), IN p_shopUserName VARCHAR(45))
+BEGIN
+  DECLARE v_service_id INT;
+  DECLARE v_shop_id INT;
+  DECLARE v_user_id INT;
+  DECLARE v_total_amount FLOAT;
+  DECLARE v_payment_type_id INT;
+
+  -- Fetch ServiceID from Services table on the basis of TypeOfService
+  SELECT ServiceID INTO v_service_id FROM Services WHERE TypeOfService = p_type_of_service;
+
+  -- Fetch ShopID using getShopIdFunction
+  SELECT getShopIdFucntion(p_shopUserName) INTO v_shop_id;
+
+  -- Fetch UserID from UserDetails table on the basis of UserName attribute
+  SELECT UserID INTO v_user_id FROM UserDetail WHERE UserName = p_username;
+
+  -- Fetch TotalAmount using V_service_id
+  SELECT getServicePrice(v_service_id) INTO v_total_amount;
+
+  -- Fetch PaymentTypeID on the basis of Type attribute in the PaymentType table
+  SELECT PaymentTypeID INTO v_payment_type_id FROM PaymentType WHERE Type = p_payment_type;
+
+  -- Insert payment data into Payments table
+  INSERT INTO Payments (OrderId, ServiceId, ShopId, Date, UserId, TotalAmount, PaymentTypeId) VALUES (NULL, v_service_id, v_shop_id, p_date, v_user_id, v_total_amount, v_payment_type_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_PaymentType` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_PaymentType`(IN paymentType VARCHAR(45))
+BEGIN
+  INSERT INTO PaymentType(type) VALUES (paymentType);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_PetCategory` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_PetCategory`(
+IN p_PetType VARCHAR(255)
+)
+BEGIN
+    INSERT INTO PetCategory (PetType)
+    VALUES (p_PetType);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_PetService` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_PetService`(IN p_Username VARCHAR(255), IN p_TypeOfService VARCHAR(255))
+BEGIN
+    DECLARE v_ShopID INT UNSIGNED;
+    DECLARE v_ServiceID INT UNSIGNED;
+
+    SELECT ShopID INTO v_ShopID
+    FROM PetShop
+    WHERE Username = p_Username;
+
+    SELECT ServiceID INTO v_ServiceID
+    FROM Services
+    WHERE TypeOfService = p_TypeOfService;
+
+    IF v_ShopID IS NOT NULL AND v_ServiceID IS NOT NULL THEN
+        INSERT INTO PetServices (ServiceID, ShopID)
+        VALUES (v_ServiceID, v_ShopID);
+    ELSEIF v_ShopID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Username not found in PetShop table';
+    ELSEIF v_ServiceID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'TypeOfService not found in Services table';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_PetShop` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_PetShop`(
+  Street VARCHAR(50),
+  City VARCHAR(50),
+  Pincode VARCHAR(45),
+  PhoneNumber VARCHAR(30),
+  Username VARCHAR(60)
+)
+BEGIN
+  DECLARE admin_id INT;
+  SELECT AdminID INTO admin_id FROM Admin;
+  IF NOT (validatePhoneNumberFunction(PhoneNumber)) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid phone number format. It should start with "+1" followed by 10 digits.';
+  ELSEIF NOT (validatePincodeFunction(Pincode)) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid zip code format. It should follow the USA standard.';
+  ELSEIF NOT (validateUserNameFunction(Username)) THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid user name format. Only alphanumerics are allowed.';
+  ELSE
+    INSERT INTO PetShop (
+      Street, City, Pincode, Username, AdminID, PhoneNumber)
+    VALUES (
+      Street, City, Pincode, Username, admin_id, PhoneNumber
+    );
+  END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_Services` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_Services`(IN p_Username VARCHAR(60), IN p_PetType VARCHAR(255), IN p_TypeOfService VARCHAR(255), IN p_Price FLOAT)
+BEGIN
+    DECLARE v_PetCategoryID INT;
+    DECLARE v_ShopID INT;
+
+    SELECT PetCategoryID INTO v_PetCategoryID
+    FROM PetCategory
+    WHERE PetType = p_PetType;
+
+    SET v_ShopID = getShopIdFucntion(p_Username);
+
+    IF v_PetCategoryID IS NOT NULL AND v_ShopID IS NOT NULL THEN
+        INSERT INTO Services (ShopID, TypeOfService, Price, PetCategoryID)
+        VALUES (v_ShopID, p_TypeOfService, p_Price, v_PetCategoryID);
+    ELSEIF v_PetCategoryID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'PetType not found in PetCategory table';
+    ELSEIF v_ShopID IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Username not found in PetShop table';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_Toys` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_Toys`(IN p_PetType VARCHAR(255), IN p_ToyName VARCHAR(255), IN p_Price FLOAT, IN p_Description VARCHAR(255))
+BEGIN
+    DECLARE v_PetCategoryID INT;
+
+    IF ValidatePrice(p_Price) THEN
+        SELECT PetCategoryID INTO v_PetCategoryID
+        FROM PetCategory
+        WHERE PetType = p_PetType;
+
+        IF v_PetCategoryID IS NOT NULL THEN
+            INSERT INTO Toys (PetCategoryID, ToyName, Price, Description)
+            VALUES (v_PetCategoryID, p_ToyName, p_Price, p_Description);
+        ELSE
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'PetType not found in PetCategory table';
+        END IF;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Price must be greater than 0';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_UserDetail` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_UserDetail`(
+  IN p_firstName VARCHAR(50),
+  IN p_lastName VARCHAR(50),
+  IN p_userName VARCHAR(60),
+  IN p_emailId VARCHAR(255),
+  IN p_phoneNumber VARCHAR(30),
+  IN p_password VARCHAR(50),
+  IN p_shopName VARCHAR(50)
+)
+BEGIN
+  DECLARE validPassword BOOLEAN;
+  DECLARE validUserName BOOLEAN;
+  DECLARE validPhoneNumber BOOLEAN;
+  DECLARE shopId INT UNSIGNED;
+
+  -- Get the shopid based on the shop name
+  
+  SELECT getShopIdFucntion(p_shopName) into shopId;
+
+  -- Check if the shop exists
+    IF shopId IS NULL THEN
+	  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Shop does not exist';
+    ELSE
+	-- Validate the input data using the functions
+	  -- SET validPassword = validatePasswordFunction(p_password); 
+	  SET validUserName = validateUserNameFunction(p_userName);
+	  SET validPhoneNumber = validatePhoneNumberFunction(p_phoneNumber);
+
+    -- Check if the input data is valid
+    IF NOT validUserName OR NOT validPhoneNumber THEN
+      SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid input data';
+    ELSE
+      -- Insert the new user into the "UserDetails" table
+      INSERT INTO UserDetail (
+        firstname, lastname, username, emailid, phonenumber, password, shopid
+      ) VALUES (
+        p_firstName, p_lastName, p_userName, p_emailId, p_phoneNumber, p_password, shopId
+      );
+    END IF;
+  END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-04-29 11:41:49
